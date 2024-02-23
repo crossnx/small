@@ -1,0 +1,51 @@
+name: small runtime
+
+on:
+  push:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - os: macos-latest
+            cc: clang
+            cxx: clang++
+          - os: ubuntu-latest
+            cc: clang
+            cxx: clang++
+
+    runs-on: ${{ matrix.platform.os }}
+    env:
+      CC: ${{ matrix.platform.cc }}
+      CXX: ${{ matrix.platform.cxx }}
+    steps:
+      - name: Install dependencies (GNU/Linux)
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update --yes
+          sudo apt-get install --yes clang-format libjavascriptcoregtk-4.0-dev
+
+      # See https://github.com/actions/runner-images/issues/8659
+      - name: Workaround Clang issue (GNU/Linux)
+        if: runner.os == 'linux' && matrix.platform.cc == 'clang'
+        run: |
+          sudo apt-get purge -y g++-13 gcc-13 libstdc++-13-dev
+          sudo apt-get install -y --allow-downgrades libstdc++-12-dev libstdc++6=12.* libgcc-s1=12.*
+
+      - uses: actions/checkout@v4
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macos'
+        run: brew bundle
+        env:
+          HOMEBREW_NO_ANALYTICS: 1
+          HOMEBREW_NO_AUTO_UPDATE: 1
+      - run: cmake --version
+      - name: Configure
+        run: make configure
+      - name: Build
+        run: make build
+      - name: Run
+        run: make run
+

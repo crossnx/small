@@ -1,4 +1,4 @@
-<p align="center"><img src="./logo.png" alt="small logo"/></p>
+<p align="center"><img src="./banner.png" alt="small logo"/></p>
 <h1 align="center">small</h1>
 <h3 align="center">Toy runtime build on top of <a src="https://github.com/crossnx/includejs">includejs</a></h3>
 <p align="center">
@@ -44,7 +44,7 @@ Example:
 make
 ```
 
-When the build is finished, you'll find the executable available:
+When the build is finished, you'll find the executable available at this location:
 
 ```
 ./build/small_runtime
